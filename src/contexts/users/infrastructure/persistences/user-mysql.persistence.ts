@@ -56,7 +56,7 @@ export class UserMysqlPersistence implements UserRepository {
         callback: (value: string) =>
           value.toLowerCase() === 'admin' ? $Enums.Role.ADMIN : value.toLowerCase() === 'usuario' ? $Enums.Role.USER : undefined,
       },
-      //{ field: 'createdAt', type: 'Date' },
+      { field: 'createdAt', type: 'Date' },
       //{ field: 'updatedAt', type: 'Date' },
     ];
 
@@ -64,8 +64,7 @@ export class UserMysqlPersistence implements UserRepository {
       where.OR = filterCampos.map((_) => this._prisma.$utls.searchFilter(_, search)).filter((_) => _ !== null && _ !== undefined);
     }
 
-    console.log(where);
-
+    console.log('WHERE GLOBAL SEARCH:', where.OR);
     /* if (search !== undefined) {
       where.OR = filterCampos.map((_) => this._prisma.globalFilter(_, search)).filter((_) => _ !== null);
     } else if (filters !== undefined) {

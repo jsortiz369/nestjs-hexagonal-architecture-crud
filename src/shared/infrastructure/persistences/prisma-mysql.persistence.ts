@@ -29,9 +29,9 @@ export class PrismaMysqlPersistence extends PrismaClient implements OnModuleInit
     try {
       await this.$connect();
 
-      this._logger.log('Server prisma database connected');
+      this._logger.log('Server prisma database connected', 'DatabaseApplication');
     } catch (error) {
-      this._logger.error('Error connecting to server prisma database');
+      this._logger.error('Error connecting to server prisma database', 'DatabaseApplication');
       throw error;
     }
   }

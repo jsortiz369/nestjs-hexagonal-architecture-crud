@@ -57,8 +57,8 @@ async function bootstrap() {
   await app.listen(port, '0.0.0.0', (): void => {
     app
       .getUrl()
-      .then((url) => logger.log(`Application is running on: ${url}`))
-      .catch((err) => logger.log(err));
+      .then((url) => logger.log(`Application is running on: ${url}`, 'BootstrapApplication'))
+      .catch((err) => logger.log(err, 'BootstrapApplication'));
   });
 }
 

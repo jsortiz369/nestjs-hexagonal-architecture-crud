@@ -1,4 +1,11 @@
-import { FiledSearchType, MatchModeDateType, MatchModeEnumType, MatchModeStringType } from 'src/shared/domain/interfaces';
+import {
+  FiledSearchType,
+  MatchModeBooleanType,
+  MatchModeDateType,
+  MatchModeEnumType,
+  MatchModeNumberType,
+  MatchModeStringType,
+} from 'src/shared/domain/interfaces';
 
 type FilterEnum = { [x: string]: string } | { [x: string]: { not: string } } | { [x: string]: { in: string[] } };
 type FilterString =
@@ -10,12 +17,23 @@ type FilterString =
   | { [x: string]: { not: { contains: string } } }
   | { [x: string]: { in: string[] } };
 
+type FilterDate =
+  | { [x: string]: Date }
+  | { [x: string]: { lt: Date } }
+  | { [x: string]: { gt: Date } }
+  | { [x: string]: { lte: Date } }
+  | { [x: string]: { gte: Date } }
+  | { [x: string]: { not: Date } }
+  | { [x: string]: { gt: Date; lt: Date } }
+  | { [x: string]: { gte: Date; lte: Date } }
+  | { [x: string]: { in: Date[] } };
+
 export class PrismaUtils {
   static searchFilter(field: FiledSearchType, value: string) {
     if (field.type === 'enum') return this.filterEnum(field, MatchModeEnumType.EQUALS, value);
     if (field.type === 'string') return this.filterString(field, MatchModeStringType.EQUALS, value);
+    if (field.type === 'Date') return this.filterDate(field, MatchModeDateType.LTE_GTE, value);
     //if (field.type === 'number') return this.filterNumber(field, value, MatchModeNumberType.EQUALS);
-    if (field.type === 'Date') return this.filterDate(field, 'ltGt', value);
     return null;
   }
 
@@ -68,10 +86,70 @@ export class PrismaUtils {
     return null;
   }
 
-  private static filterDate(field: FiledSearchType, matchMode: MatchModeDateType | 'ltGt' | 'lteGte', value: string) {
+  /**
+   * @description Validate filters Date value
+   * @date 2025-11-28 07:06:47
+   * @author Jogan Ortiz Muñoz
+   *
+   * @private
+   * @static
+   * @param {FiledSearchType} field
+   * @param {MatchModeDateType} matchMode
+   * @param {string} value
+   * @returns {(FilterDate | null)}
+   */
+  private static filterDate(field: FiledSearchType, matchMode: MatchModeDateType, value: string): FilterDate | null {
     const fieldValue = field.callback ? field.callback(value) : value;
     if (fieldValue === undefined || fieldValue === null) return null;
 
+    const dates = fieldValue.split(',');
+    const deteValidate = this.validDataSearch(dates[0], true);
+    if (deteValidate === null) return null;
+    if (matchMode === MatchModeDateType.EQUALS) return { [field.field]: deteValidate };
+    if (matchMode === MatchModeDateType.LT) return { [field.field]: { lt: deteValidate } };
+    if (matchMode === MatchModeDateType.GT) return { [field.field]: { gt: deteValidate } };
+    if (matchMode === MatchModeDateType.LTE) return { [field.field]: { lte: deteValidate } };
+    if (matchMode === MatchModeDateType.GTE) return { [field.field]: { gte: deteValidate } };
+    if (matchMode === MatchModeDateType.NOT_EQUALS) return { [field.field]: { not: deteValidate } };
+
+    const dateEndValidate = this.validDataSearch(dates[1] || dates[0]);
+    if (dateEndValidate === null) return null;
+    if (matchMode === MatchModeDateType.LT_GT) return { [field.field]: { gt: deteValidate, lt: dateEndValidate } };
+    if (matchMode === MatchModeDateType.LTE_GTE) return { [field.field]: { gte: deteValidate, lte: dateEndValidate } };
+
+    const inDateValidate = dates.map((date) => this.validDataSearch(date, true)).filter((date) => date !== null);
+    if (matchMode === MatchModeDateType.IN) return { [field.field]: { in: inDateValidate } };
+    return null;
+  }
+
+  private static filterNumber(field: FiledSearchType, matchMode: MatchModeNumberType, value: string) {
+    const fieldValue = field.callback ? field.callback(value) : value;
+    if (fieldValue === undefined || fieldValue === null) return null;
+
+    // TODO: Implement number filter logic
+    return null;
+  }
+
+  private static filterBoolean(field: FiledSearchType, matchMode: MatchModeBooleanType, value: string) {
+    const fieldValue = field.callback ? field.callback(value) : value;
+    if (fieldValue === undefined || fieldValue === null) return null;
+
+    // TODO: Implement boolean filter logic
+    return null;
+  }
+
+  /**
+   * @description Validate string to Date
+   * @date 2025-11-28 06:41:57
+   * @author Jogan Ortiz Muñoz
+   *
+   * @private
+   * @static
+   * @param {string} value
+   * @param {boolean} [dateInit=false]
+   * @returns {(Date | null)}
+   */
+  private static validDataSearch(value: string, dateInit: boolean = false): Date | null {
     const year = value.slice(0, 4);
     const month = value.slice(5, 7);
     const day = value.slice(8, 10);
@@ -89,66 +167,44 @@ export class PrismaUtils {
     )
       return null;
 
-    let yearStart: string | undefined = undefined;
-    let yearEnd: string | undefined = undefined;
-    let monthStart: string | undefined = undefined;
-    let monthEnd: string | undefined = undefined;
-    let dateStart: string | undefined = undefined;
-    let dateEnd: string | undefined = undefined;
-    let hourStart: string | undefined = undefined;
-    let hourEnd: string | undefined = undefined;
-    let minuteStart: string | undefined = undefined;
-    let minuteEnd: string | undefined = undefined;
-    let secondStart: string | undefined = undefined;
-    let secondEnd: string | undefined = undefined;
+    let yearValid: string | undefined = undefined;
+    let monthValid: string | undefined = undefined;
+    let dateValid: string | undefined = undefined;
+    let hourValid: string | undefined = undefined;
+    let minuteValid: string | undefined = undefined;
+    let secondValid: string | undefined = undefined;
 
     if (/^\d+$/.test(year)) {
       if (Number(year) < 1 || Number(year) > 9999) return null;
-      yearStart = (Number(year) >= 1 && Number(year) <= 9999 ? year : '1').padStart(4, '0');
-      yearEnd = (Number(year) >= 1 && Number(year) <= 9999 ? year : '9999').padStart(4, '0');
+      yearValid = (Number(year) >= 1 && Number(year) <= 9999 ? year : dateInit ? '1' : '9999').padStart(4, '0');
     }
 
     if (/^\d+$/.test(month) || month === '') {
       if ((Number(month) < 1 || Number(month) > 12) && month !== '') return null;
-      monthStart = (Number(month) >= 1 && Number(month) <= 12 ? month : '1').padStart(2, '0');
-      monthEnd = (Number(month) >= 1 && Number(month) <= 12 ? month : '12').padStart(2, '0');
+      monthValid = (Number(month) >= 1 && Number(month) <= 12 ? month : dateInit ? '1' : '12').padStart(2, '0');
     }
 
     if (/^\d+$/.test(day) || day === '') {
       if ((Number(day) < 1 || Number(day) > 31) && day !== '') return null;
-      dateStart = (Number(day) >= 1 && Number(day) <= 31 ? day : '1').padStart(2, '0');
-      dateEnd = (Number(day) >= 1 && Number(day) <= 31 ? day : '31').padStart(2, '0');
+      dateValid = (Number(day) >= 1 && Number(day) <= 31 ? day : dateInit ? '1' : '31').padStart(2, '0');
     }
 
     if (/^\d+$/.test(hour) || hour === '') {
       if ((Number(hour) < 0 || Number(hour) > 23) && hour !== '') return null;
-      hourStart = (Number(hour) >= 0 && Number(hour) <= 23 ? hour : '0').padStart(2, '0');
-      hourEnd = (Number(hour) >= 0 && Number(hour) <= 23 && hour != '' ? hour : '23').padStart(2, '0');
+      hourValid = (Number(hour) >= 0 && Number(hour) <= 23 && hour != '' ? hour : dateInit ? '0' : '23').padStart(2, '0');
     }
 
     if (/^\d+$/.test(minute) || minute === '') {
       if ((Number(minute) < 0 || Number(minute) > 59) && minute !== '') return null;
-      minuteStart = (Number(minute) >= 0 && Number(minute) <= 59 ? minute : '0').padStart(2, '0');
-      minuteEnd = (Number(minute) >= 0 && Number(minute) <= 59 && minute != '' ? minute : '59').padStart(2, '0');
+      minuteValid = (Number(minute) >= 0 && Number(minute) <= 59 && minute != '' ? minute : dateInit ? '0' : '59').padStart(2, '0');
     }
 
     if (/^\d+$/.test(second) || second === '') {
       if ((Number(second) < 0 || Number(second) > 59) && second !== '') return null;
-      secondStart = (Number(second) >= 0 && Number(second) <= 59 ? second : '0').padStart(2, '0');
-      secondEnd = (Number(second) >= 0 && Number(second) <= 59 && second != '' ? second : '59').padStart(2, '0');
+      secondValid = (Number(second) >= 0 && Number(second) <= 59 && second != '' ? second : dateInit ? '0' : '59').padStart(2, '0');
     }
 
-    if (!yearStart || !monthStart || !dateStart || !hourStart || !minuteStart || !secondStart) return null;
-    const start = `${yearStart}-${monthStart}-${dateStart}T${hourStart}:${minuteStart}:${secondStart}.000Z`;
-    const end = `${yearEnd}-${monthEnd}-${dateEnd}T${hourEnd}:${minuteEnd}:${secondEnd}.999Z`;
-    if (matchMode === MatchModeDateType.EQUALS) return { [field.field]: { equals: { gte: new Date(start), lte: new Date(end) } } };
-    if (matchMode === MatchModeDateType.LT) return { [field.field]: { lt: new Date(start) } };
-    if (matchMode === MatchModeDateType.GT) return { [field.field]: { gt: new Date(start) } };
-    if (matchMode === MatchModeDateType.LTE) return { [field.field]: { lte: new Date(start) } };
-    if (matchMode === MatchModeDateType.GTE) return { [field.field]: { gte: new Date(start) } };
-    if (matchMode === MatchModeDateType.NOT_EQUALS) return { [field.field]: { not: new Date(start) } };
-    if (matchMode === 'ltGt') return { [field.field]: { gt: new Date(start), lt: new Date(end) } };
-    if (matchMode === 'lteGte') return { [field.field]: { gte: new Date(start), lte: new Date(end) } };
-    return null;
+    if (!yearValid || !monthValid || !dateValid || !hourValid || !minuteValid || !secondValid) return null;
+    return new Date(`${yearValid}-${monthValid}-${dateValid}T${hourValid}:${minuteValid}:${secondValid}.000Z`);
   }
 }

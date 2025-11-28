@@ -42,9 +42,12 @@ export enum MatchModeDateType {
   EQUALS = 'equals',
   LT = 'lt',
   GT = 'gt',
+  LT_GT = 'ltGt',
   LTE = 'lte',
   GTE = 'gte',
+  LTE_GTE = 'lteGte',
   NOT_EQUALS = 'notEquals',
+  IN = 'in',
 }
 
 export enum MatchModeBooleanType {
