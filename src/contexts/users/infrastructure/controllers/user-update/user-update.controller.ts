@@ -1,7 +1,8 @@
 import { Body, Controller, Param, Patch } from '@nestjs/common';
+
 import { UuidDto } from 'src/app/http/dto';
 import { ROUTES } from 'src/app/http/routes';
-import { UserUpdateCommand, UserUpdateHandler } from 'src/contexts/users/application';
+import { UserUpdateCommand, UserUpdateHandler, UserUpdateIdCommand } from 'src/contexts/users/application';
 import { UserUpdateDto } from './user-update.dto';
 
 @Controller(ROUTES.USERS)
@@ -11,7 +12,7 @@ export class UserUpdateController {
   @Patch(':id')
   async execute(@Param() param: UuidDto, @Body() body: UserUpdateDto) {
     const result = await this._handler.execute(
-      param.id,
+      new UserUpdateIdCommand(param.id),
       new UserUpdateCommand(
         body.firstName,
         body.secondName,

@@ -1,9 +1,10 @@
-import { UserRepository } from 'src/contexts/users/domain/repository';
+import { UserRepository } from 'src/contexts/users/domain/repositories';
 import { UserUpdateCommand } from './user-update.command';
 import { UserPrimitive } from 'src/contexts/users/domain/user.interface';
 import { UserFindOneByIdService } from 'src/contexts/users/domain/service';
 import { UserConflictEmailException, UserNotChangesValueException } from 'src/contexts/users/domain/exceptions';
 import { User } from 'src/contexts/users/domain/user';
+import { UserUpdateIdCommand } from './user-update-id.command';
 
 export class UserUpdateHandler {
   constructor(
@@ -11,9 +12,9 @@ export class UserUpdateHandler {
     private readonly _userFindOneByIdService: UserFindOneByIdService,
   ) {}
 
-  async execute(id: string, command: UserUpdateCommand): Promise<Omit<UserPrimitive, 'password'>> {
+  async execute(idCommand: UserUpdateIdCommand, command: UserUpdateCommand): Promise<Omit<UserPrimitive, 'password'>> {
     // TODO: validate exist user by ID
-    const user = await this._userFindOneByIdService.execute(id);
+    const user = await this._userFindOneByIdService.execute(idCommand._id);
 
     // TODO: Validate has changes values
     const hasChangesValues = this.validateExistChangesValues(command, user);

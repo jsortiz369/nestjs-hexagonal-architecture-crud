@@ -1,4 +1,5 @@
 import { Body, Controller, Post } from '@nestjs/common';
+
 import { UserCreateDto } from './user-update.dto';
 import { ROUTES } from 'src/app/http/routes';
 import { UserCreateCommand, UserCreateHandler } from 'src/contexts/users/application';

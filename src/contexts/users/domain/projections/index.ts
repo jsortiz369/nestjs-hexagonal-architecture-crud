@@ -1,1 +1,2 @@
-export { UserListItemProjection } from './user-list-item.projection';
+export { UserFindProjection } from './user-find.projection';
+export { UserFindOneByIdProjection } from './user-find-one-by-id.projection';

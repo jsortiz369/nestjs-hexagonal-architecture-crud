@@ -1,5 +1,5 @@
 import { $Enums } from 'generated/mysql/prisma';
-import { UserRepository } from 'src/contexts/users/domain/repository';
+import { UserRepository } from 'src/contexts/users/domain/repositories';
 import { User } from 'src/contexts/users/domain/user';
 import { UserPrimitive } from 'src/contexts/users/domain/user.interface';
 import { UserEmail, UserId } from 'src/contexts/users/domain/vo';
@@ -11,7 +11,7 @@ export class UserPersistence implements UserRepository {
 
   async findOneById(id: UserId): Promise<User | null> {
     const result = await this._prisma.user.findFirst({
-      where: { id: id._value },
+      where: { id: id._value, deletedAt: null },
     });
     if (!result) return null;
 

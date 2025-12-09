@@ -1,22 +1,27 @@
 import { Provider } from '@nestjs/common';
 
-import { PrismaMysqlPersistence, PrismaPostgresqlPersistence, PrismaSqlServerPersistence } from 'src/shared/database/infrastructure/persistences';
+import { PrismaMysqlPersistence } from 'src/shared/database/infrastructure/persistences';
 import { EnvRepository } from 'src/shared/env/domain/env.repository';
-import { UserRepository } from '../../domain/repository/user.repository.js';
+import { UserQueryRepository } from '../../domain/repositories/user-query.repository';
+import { UserRepository } from '../../domain/repositories';
+import { UserPersistence, UserQueryPersistence } from './mysql';
 
 export const UserPersistenceProvider: Provider = {
   provide: UserRepository,
-  useFactory: async (
-    _envRepository: EnvRepository,
-    mysql: PrismaMysqlPersistence,
-    postgresql: PrismaPostgresqlPersistence,
-    sqlserver: PrismaSqlServerPersistence,
-  ): Promise<UserRepository> => {
+  useFactory: (_envRepository: EnvRepository, mysql: PrismaMysqlPersistence): UserRepository => {
     const typeDb = _envRepository.get('DB_TYPE');
-    if (typeDb === 'mysql') return await import('./mysql/user.persistence.js').then((m) => new m.UserPersistence(mysql));
-    if (typeDb === 'postgresql') throw new Error('Postgres not implemented for UserRepository');
-    if (typeDb === 'sqlserver') throw new Error('sqlserver not implemented for UserRepository');
+    if (typeDb === 'mysql') return new UserPersistence(mysql);
     throw new Error('No persistence defined for UserRepository');
   },
-  inject: [EnvRepository, PrismaMysqlPersistence, PrismaPostgresqlPersistence, PrismaSqlServerPersistence],
+  inject: [EnvRepository, PrismaMysqlPersistence],
+};
+
+export const UserQueryPersistenceProvider: Provider = {
+  provide: UserQueryRepository,
+  useFactory: (_envRepository: EnvRepository, mysql: PrismaMysqlPersistence): UserQueryRepository => {
+    const typeDb = _envRepository.get('DB_TYPE');
+    if (typeDb === 'mysql') return new UserQueryPersistence(mysql);
+    throw new Error('No persistence defined for UserRepository');
+  },
+  inject: [EnvRepository, PrismaMysqlPersistence],
 };

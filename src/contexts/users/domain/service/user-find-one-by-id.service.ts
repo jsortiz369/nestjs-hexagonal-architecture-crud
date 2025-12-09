@@ -1,5 +1,5 @@
 import { UserNotFoundException } from '../exceptions';
-import { UserRepository } from '../repository';
+import { UserRepository } from '../repositories';
 import { User } from '../user';
 import { UserId } from '../vo';
 

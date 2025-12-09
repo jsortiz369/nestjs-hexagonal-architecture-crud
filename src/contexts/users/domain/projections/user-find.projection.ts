@@ -1,4 +1,4 @@
-export class UserListItemProjection {
+export class UserFindProjection {
   constructor(
     readonly id: string,
     readonly fullName: string,

@@ -4,8 +4,8 @@ import { UuidModule } from 'src/shared/uuid/uuid.module';
 import { DatabaseModule } from 'src/shared/database/database.module';
 import { EnvModule } from 'src/shared/env/env.module';
 import { UuidRepository } from 'src/shared/uuid/domain/uuid.repository';
-import { UserRepository } from './domain/repository';
-import { UserPersistenceProvider } from './infrastructure/persistences';
+import { UserQueryRepository, UserRepository } from './domain/repositories';
+import { UserPersistenceProvider, UserQueryPersistenceProvider } from './infrastructure/persistences';
 
 import * as controllers from './infrastructure/controllers';
 import * as handlers from './application';
@@ -13,13 +13,19 @@ import * as services from './domain/service';
 
 @Module({
   imports: [EnvModule, DatabaseModule, UuidModule],
-  controllers: [controllers.UserCreateController, controllers.UserUpdateController],
+  controllers: [controllers.UserCreateController, controllers.UserUpdateController, controllers.UserFindOneByIdController],
   providers: [
     UserPersistenceProvider,
+    UserQueryPersistenceProvider,
     {
       provide: services.UserFindOneByIdService,
       useFactory: (userRepository: UserRepository) => new services.UserFindOneByIdService(userRepository),
       inject: [UserRepository],
+    },
+    {
+      provide: services.UserQueryFindOneByIdService,
+      useFactory: (userQueryRepository: UserQueryRepository) => new services.UserQueryFindOneByIdService(userQueryRepository),
+      inject: [UserQueryRepository],
     },
     {
       provide: handlers.UserCreateHandler,
@@ -34,6 +40,12 @@ import * as services from './domain/service';
         return new handlers.UserUpdateHandler(_userRepository, _userFindOneByIdService);
       },
       inject: [UserRepository, services.UserFindOneByIdService],
+    },
+    {
+      provide: handlers.UserFindOneByIdHandler,
+      useFactory: (_userQueryFindOneByIdService: services.UserQueryFindOneByIdService) =>
+        new handlers.UserFindOneByIdHandler(_userQueryFindOneByIdService),
+      inject: [services.UserQueryFindOneByIdService],
     },
     /* {
       provide: UserRepository,

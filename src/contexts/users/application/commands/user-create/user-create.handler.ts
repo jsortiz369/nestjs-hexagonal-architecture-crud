@@ -1,4 +1,4 @@
-import { UserRepository } from 'src/contexts/users/domain/repository';
+import { UserRepository } from 'src/contexts/users/domain/repositories';
 import { UserCreateCommand } from './user-create.command';
 import { UuidRepository } from 'src/shared/uuid/domain/uuid.repository';
 import { User } from 'src/contexts/users/domain/user';
