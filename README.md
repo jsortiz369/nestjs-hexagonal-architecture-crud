@@ -68,99 +68,92 @@ $ docker compose up --build
 
 ```
 .
-├── prisma/
-│
-├── src/
-│ ├── app/
-│ │ ├── http/
-| | | ├── dto/
-| | | ├── filters/
-| | | ├── interceptors/
-| | | ├── routes/
-| | | └── http.module.ts
-| | |
-│ │ └── app.module.ts
-│ │
-│ ├── contexts/
-│ │ ├── users/
-│ │ | ├── application/
-│ │ | │ ├── commands/
-| | | | | ├── user-create/
-| | | | | ├── user-delete/
-| | | | | └── user-update/
-| | | | |
-│ │ | │ ├── queries/
-| | | | | ├── exist-by-email/
-| | | | | ├── find-all/
-| | | | | └── find-one-by-id/
-| | | | |
-│ │ | │ └── index.ts
-│ │ | │
-│ │ | ├── domain/
-│ │ | │ ├── exceptions/
-│ │ | │ ├── projections/
-│ │ | │ ├── repositories/
-│ │ | │ ├── service/
-│ │ | │ ├── vo/
-│ │ | │ ├── user.interface.ts
-│ │ | │ └── user.ts
-│ │ | │
-│ │ | ├── infrastructure/
-│ │ | │ ├── controllers/
-| | | | | ├── user-create/
-| | | | | ├── user-delete/
-| | | | | ├── user-exist-by-email/
-| | | | | ├── user-find-all/
-| | | | | ├── user-find-one-by-id/
-| | | | | ├── user-update/
-| | | | | └── index.ts
-| | | | |
-│ │ | │ ├── decorators/
-│ │ | │ └── persistences/
-| | | | ├── mysql/
-| | | | ├── postgresql/
-| | | | ├── sqlserver
-| | | | └── index.ts
-│ │ | │
-│ │ | └── users.module.ts
-| | |
-│ │ └── contexts.module.ts
-│ │
-│ ├── shared/
-│ │ ├── bcrypt/
-| | | ├── domain/
-| | | ├── infrastructure/
-| | | | └── persistences/
-| | | └── database.module.ts
-| | |
-│ │ ├── database/
-| | | ├── domain/
-| | | ├── infrastructure/
-| | | | ├── persistences/
-| | | | └── utils/
-| | | └── database.module.ts
-| | |
-│ │ ├── env/
-| | | ├── domain/
-| | | ├── infrastructure/
-| | | | ├── persistences/
-| | | | └── schemas/
-| | | └── env.module.ts
-| | |
-│ │ ├── system/
-| | | └── domain/
-| | | ├── constants/
-| | | ├── exceptions
-| | | ├── vo/
-| | | └── system.interface.ts
-| | |
-│ │ └── uuid/
-| | ├── domain/
-| | ├── infrastructure/
-| | | ├── constants/
-| | | └── persistences/
-| | └── uuid.module.ts
-│ │
-│ ├── main.ts
-│ └── prestart.ts
+├── 📂 prisma/
+|   ├── 📂 mysql/
+|   |   ├── 📂 migrations/
+|   |   └── 📄 schema.prisma
+|   ├── 📂 postgresql/
+|   |   ├── 📂 migrations/
+|   |   └── 📄 schema.prisma
+|   └── 📂 sqlserver/
+|       ├── 📂 migrations/
+|       └── 📄 schema.prisma
+├── 📂 src/
+│   ├── 📂 app/
+│   │   ├── 📂 http/
+|   |   |   ├── 📂 dto/
+|   |   |   ├── 📂 filters/
+|   |   |   ├── 📂 interceptors/
+|   |   |   ├── 📂 routes/
+|   |   |   └── 📄 http.module.ts
+│   │   └── 📄 app.module.ts
+│   ├── 📂 contexts/
+│   │   ├── 📂 users/
+│   │   |   ├── 📂 application/
+│   │   |   │   ├── 📂 commands/
+|   |   |   |   |   ├── 📂 user-create/
+|   |   |   |   |   ├── 📂 user-delete/
+|   |   |   |   |   └── 📂 user-update/
+│   │   |   │   ├── 📂 queries/
+|   |   |   |   |   ├── 📂 exist-by-email/
+|   |   |   |   |   ├── 📂 find-all/
+|   |   |   |   |   └── 📂 find-one-by-id/
+│   │   |   │   └── 📄 index.ts
+│   │   |   ├── 📂 domain/
+│   │   |   │   ├── 📂 exceptions/
+│   │   |   │   ├── 📂 projections/
+│   │   |   │   ├── 📂 repositories/
+│   │   |   │   ├── 📂 service/
+│   │   |   │   ├── 📂 vo/
+│   │   |   │   ├── 📄 user.interface.ts
+│   │   |   │   └── 📄 user.ts
+│   │   |   ├── infrastructure/
+│   │   |   │   ├── 📂 controllers/
+|   |   |   |   |   ├── 📂 user-create/
+|   |   |   |   |   ├── 📂 user-delete/
+|   |   |   |   |   ├── 📂 user-exist-by-email/
+|   |   |   |   |   ├── 📂 user-find-all/
+|   |   |   |   |   ├── 📂 user-find-one-by-id/
+|   |   |   |   |   ├── 📂 user-update/
+|   |   |   |   |   └── 📄 index.ts
+│   │   |   │   ├── 📂 decorators/
+│   │   |   │   └── 📂 persistences/
+|   |   |   |       ├── 📂 mysql/
+|   |   |   |       ├── 📂 postgresql/
+|   |   |   |       ├── 📂 sqlserver
+|   |   |   |       └── 📄 index.ts
+│   │   |   └── 📄 users.module.ts
+│   │   └── 📄 contexts.module.ts
+│   ├── 📂 shared/
+│   │   ├── 📂 bcrypt/
+|   |   |   ├── 📂 domain/
+|   |   |   ├── 📂 infrastructure/
+|   |   |   |   └── 📂 persistences/
+|   |   |   └── 📄 database.module.ts
+│   │   ├── 📂 database/
+|   |   |   ├── 📂 domain/
+|   |   |   ├── 📂 infrastructure/
+|   |   |   |   ├── 📂 persistences/
+|   |   |   |   └── 📂 utils/
+|   |   |   └── 📄 database.module.ts
+│   │   ├── 📂 env/
+|   |   |   ├── 📂 domain/
+|   |   |   ├── 📂 infrastructure/
+|   |   |   |   ├── 📂 persistences/
+|   |   |   |   └── 📂 schemas/
+|   |   |   └── 📄 env.module.ts
+│   │   ├── 📂 system/
+|   |   |   └── 📂 domain/
+|   |   |       ├── 📂 constants/
+|   |   |       ├── 📂 exceptions
+|   |   |       ├── 📂 vo/
+|   |   |       └── 📄 system.interface.ts
+│   │   └── 📂 uuid/
+|   |       ├── 📂 domain/
+|   |       ├── 📂 infrastructure/
+|   |       |   ├── 📂 constants/
+|   |       |   └── 📂 persistences/
+|   |       └── 📄 uuid.module.ts
+│   ├── 📄 main.ts
+│   └── 📄 prestart.ts
 ```
