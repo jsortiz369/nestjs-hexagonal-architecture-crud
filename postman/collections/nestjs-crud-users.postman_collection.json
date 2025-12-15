@@ -1,0 +1,202 @@
+{
+  "info": {
+    "_postman_id": "707a7c2f-c67b-4cc9-87d4-d249fb967f26",
+    "name": "nestjs-crud-users",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "FIND ALL",
+      "id": "e57e91c7-677b-42d8-8fae-16d4090477d3",
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{url}}/api/users?page=1&sortOrder=desc&sort=firstName&filters={\"status\": {\"value\": \"inactivo\", \"matchMode\": \"equals\" }}&limit=20",
+          "host": [
+            "{{url}}"
+          ],
+          "path": [
+            "api",
+            "users"
+          ],
+          "query": [
+            {
+              "key": "page",
+              "value": "1"
+            },
+            {
+              "key": "sortOrder",
+              "value": "desc"
+            },
+            {
+              "key": "sort",
+              "value": "firstName"
+            },
+            {
+              "key": "filters",
+              "value": "{\"status\": {\"value\": \"inactivo\", \"matchMode\": \"equals\" }}"
+            },
+            {
+              "key": "search",
+              "value": "2025-12-13",
+              "disabled": true
+            },
+            {
+              "key": "limit",
+              "value": "20"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "FIND ONE BY ID",
+      "id": "207c26bb-2f29-48ce-8b67-4be10fc0bb26",
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{url}}/api/users/45df6b1b-453d-48ef-84f8-8500c5e96686",
+          "host": [
+            "{{url}}"
+          ],
+          "path": [
+            "api",
+            "users",
+            "45df6b1b-453d-48ef-84f8-8500c5e96686"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "CREATE",
+      "id": "071fcd52-3410-40d1-8132-9e87f3f0369f",
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"firstName\": \"Jogan\",\r\n    \"firstSurname\": \"Ortiz\",\r\n    \"birthday\": \"2000-07-23\",\r\n    \"email\": \"jogansmitho@gmail.com\",\r\n    \"password\": \"12345678\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{url}}/api/users",
+          "host": [
+            "{{url}}"
+          ],
+          "path": [
+            "api",
+            "users"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "UPDATE",
+      "id": "cd562b4a-4f0d-41e1-873e-9d2925288f47",
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "PATCH",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"email\": \"jogan.ortiz@gmail.com\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{url}}/api/users/45df6b1b-453d-48ef-84f8-8500c5e96686",
+          "host": [
+            "{{url}}"
+          ],
+          "path": [
+            "api",
+            "users",
+            "45df6b1b-453d-48ef-84f8-8500c5e96686"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "DELETE",
+      "id": "8fe20de8-f462-410e-a30a-a8c0486fd6f1",
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{url}}/api/users/45df6b1b-453d-48ef-84f8-8500c5e96686",
+          "host": [
+            "{{url}}"
+          ],
+          "path": [
+            "api",
+            "users",
+            "45df6b1b-453d-48ef-84f8-8500c5e96686"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "EXIST BY EMAIL",
+      "id": "22ffb994-16bd-4771-8e88-4ac1d13c5290",
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{url}}/api/users/exist/email?email=jogansmitho@gmail.com",
+          "host": [
+            "{{url}}"
+          ],
+          "path": [
+            "api",
+            "users",
+            "exist",
+            "email"
+          ],
+          "query": [
+            {
+              "key": "email",
+              "value": "jogansmitho@gmail.com"
+            },
+            {
+              "key": "id",
+              "value": "2dc0acce-bc8d-4b7c-84ac-cf30eabd25c8",
+              "disabled": true
+            }
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
